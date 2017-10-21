@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  context-path: /
+
+spring:
+#  resources:
+#    static-locations: classpath:/static/frontend/build
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 12345
+    url: jdbc:mysql://localhost:3306/task_tracker?useSSL=false
+
+#logging:
+#  level:
+#    org.springframework.web: DEBUG
