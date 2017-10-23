@@ -8,6 +8,7 @@ import com.saranchenkov.taskTracker.repository.CommentRepository;
 import com.saranchenkov.taskTracker.repository.ProjectRepository;
 import com.saranchenkov.taskTracker.repository.TaskRepository;
 import com.saranchenkov.taskTracker.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -19,6 +20,7 @@ import java.util.Objects;
  * Created by Ivan on 16.10.2017.
  */
 @Service
+@Slf4j
 public class AppService {
 
     private final UserRepository userRepository;
@@ -36,25 +38,17 @@ public class AppService {
 
     // TODO: 18.10.2017 добавить к Project поле User и сохранять проект добавляя к нему reference на юзера
     @Transactional
-    public Project saveProject(String name){
+    public Project saveProject(int managerId, String name){
         Assert.hasLength(name, "Name of saving project is empty !");
         Project newProject = new Project(name);
-        User manager = userRepository.getOne(1);
+        User manager = userRepository.getOne(managerId);
         newProject.getUsers().add(manager);
         return projectRepository.save(newProject);
     }
-//    @Transactional
-//    public Project saveProject(String name){
-//        Assert.hasLength(name, "Name of saving project is empty !");
-//        Project newProject = projectRepository.save(new Project(name));
-//        User user = userRepository.findOne(1);
-//        user.getProjects().add(newProject);
-//        userRepository.save(user);
-//        return newProject;
-//    }
 
     @Transactional
     public boolean addDeveloperToProject(int projectId, int developerId){
+        log.info("Adding developer {} to project {}", developerId, projectId);
         Project project = projectRepository.findOne(projectId);
         if(Objects.nonNull(project)){
             User developer = userRepository.getOne(developerId);
@@ -81,7 +75,7 @@ public class AppService {
 
     @Transactional
     public boolean updateComment(String content, int commentId){
-        Objects.requireNonNull(content);
+        Assert.notNull(content, "Updating content is null !");
         if (Objects.nonNull(commentRepository.findOne(commentId))){
             commentRepository.updateCommentContent(content, commentId);
             return true;

@@ -6,7 +6,6 @@ import com.saranchenkov.taskTracker.jsonViews.TaskViews;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -38,15 +37,15 @@ public class Comment implements Comparable<Comment>{
     }
 
     @Override
+    public int compareTo(Comment o) {
+        return o.getId() - this.id;
+    }
+
+    @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
                 '}';
-    }
-
-    @Override
-    public int compareTo(Comment o) {
-        return o.getId() - this.id;
     }
 }

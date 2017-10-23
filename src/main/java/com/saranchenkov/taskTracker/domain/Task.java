@@ -20,7 +20,6 @@ import java.util.SortedSet;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Task {
 
     public static final String COMMENTS = "comments";

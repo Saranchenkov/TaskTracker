@@ -3,14 +3,17 @@ package com.saranchenkov.taskTracker.repository;
 import com.saranchenkov.taskTracker.domain.Project;
 import com.saranchenkov.taskTracker.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by Ivan on 14.10.2017.
  */
+
 public interface UserRepository extends JpaRepository<User, Integer>{
 
     @Query("select u.projects from User u where u.id = :id ")
@@ -21,4 +24,9 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 
     @Query("select u from User u where u.email = :email")
     User findByEmail(@Param("email") String email);
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.enabled=true where u.id = :id")
+    int enableUser(@Param("id") int id);
 }

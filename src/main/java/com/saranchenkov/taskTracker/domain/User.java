@@ -6,13 +6,9 @@ import com.saranchenkov.taskTracker.jsonViews.TaskViews;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Ivan on 13.10.2017.
@@ -22,7 +18,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +25,7 @@ public class User {
     @JsonView(TaskViews.ExtendedTask.class)
     private int id;
 
+    @JsonView(TaskViews.ExtendedTask.class)
     private String email;
 
     private String password;
@@ -46,7 +42,7 @@ public class User {
     private Role role;
 
     @Column(name = "is_active")
-    private boolean isActive = false;
+    private boolean enabled = false;
 
     @ManyToMany(mappedBy = "users", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
@@ -58,6 +54,19 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
-        this.isActive = false;
+        this.enabled = false;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", role=" + role +
+                ", enabled=" + enabled +
+                '}';
     }
 }

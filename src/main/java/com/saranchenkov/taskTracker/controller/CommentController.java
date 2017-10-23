@@ -2,7 +2,6 @@ package com.saranchenkov.taskTracker.controller;
 
 import com.saranchenkov.taskTracker.domain.Comment;
 import com.saranchenkov.taskTracker.repository.CommentRepository;
-import com.saranchenkov.taskTracker.repository.TaskRepository;
 import com.saranchenkov.taskTracker.service.AppService;
 import com.saranchenkov.taskTracker.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,11 @@ import java.util.Objects;
 @Slf4j
 public class CommentController {
 
-    private final TaskRepository taskRepository;
     private final CommentRepository commentRepository;
     private final AppService service;
 
     @Autowired
-    public CommentController(TaskRepository taskRepository, CommentRepository commentRepository, AppService service) {
-        this.taskRepository = taskRepository;
+    public CommentController(CommentRepository commentRepository, AppService service) {
         this.commentRepository = commentRepository;
         this.service = service;
     }

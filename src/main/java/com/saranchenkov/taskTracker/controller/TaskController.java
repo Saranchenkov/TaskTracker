@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.saranchenkov.taskTracker.domain.Task;
 import com.saranchenkov.taskTracker.domain.TaskStatus;
 import com.saranchenkov.taskTracker.jsonViews.TaskViews;
-import com.saranchenkov.taskTracker.repository.ProjectRepository;
 import com.saranchenkov.taskTracker.repository.TaskRepository;
-import com.saranchenkov.taskTracker.repository.UserRepository;
 import com.saranchenkov.taskTracker.service.AppService;
 import com.saranchenkov.taskTracker.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,9 +42,17 @@ public class TaskController {
         return taskRepository.findTasksByProjectId(id);
     }
 
+    @GetMapping("/filter")
+    @JsonView(TaskViews.CommonTask.class)
+    public List<Task> findFilteredTasks(@PathVariable("projectId") int projectId, HttpServletRequest request){
+        Util.printLog(request);
+        int developerId = Util.getCustomPrincipal(request).getId();
+        return taskRepository.findFilteredTasks(projectId, developerId);
+    }
+
     @PostMapping
     @JsonView(TaskViews.CommonTask.class)
-    public ResponseEntity<?> saveTask(@RequestBody Task task, @PathVariable("projectId") int projectId, HttpServletRequest request){
+    public ResponseEntity<?> save(@RequestBody Task task, @PathVariable("projectId") int projectId, HttpServletRequest request){
         Util.printLog(request);
         Objects.requireNonNull(task);
         return Objects.nonNull(taskRepository.findTaskByName(task.getName())) ?
@@ -54,7 +61,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable("id") int id, HttpServletRequest request){
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> delete(@PathVariable("id") int id, HttpServletRequest request){
         Util.printLog(request);
         taskRepository.delete(id);
         return new ResponseEntity(HttpStatus.OK);
@@ -62,7 +70,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @JsonView(TaskViews.ExtendedTask.class)
-    public ResponseEntity<?> getTask(@PathVariable("id") int id, HttpServletRequest request){
+    public ResponseEntity<?> findWithDetails(@PathVariable("id") int id, HttpServletRequest request){
         Util.printLog(request);
         Task task = taskRepository.findTaskWithCommentsAndDeveloper(id);
         return Objects.nonNull(task) ?
@@ -79,6 +87,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/developer")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> setDeveloper(@RequestBody int developerId, @PathVariable("id") int taskId, HttpServletRequest request){
         Util.printLog(request);
         return service.setDeveloperToTask(developerId, taskId) ?

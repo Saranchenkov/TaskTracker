@@ -4,9 +4,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `first_name` VARCHAR(45) NOT NULL,
   `last_name` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) UNIQUE NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` BINARY(60) NOT NULL,
   `role` ENUM('DEVELOPER', 'MANAGER') NOT NULL,
-  `is_active` BOOLEAN DEFAULT FALSE,
+  `enabled` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`user_id`)
 );
 
