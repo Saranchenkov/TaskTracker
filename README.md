@@ -1,6 +1,6 @@
 # TaskTracker
 ### How to run server:
-####    1) create MySQL database with name 'task_tracker'
+####    1) create MySQL database with name 'task_tracker' and initialize (sql/schema.sql)
 ####   2) open /src/main/resources/application.yml and change necessary properties:
     
       mail.username
